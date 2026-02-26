@@ -4,10 +4,10 @@ Content-Type: application/json
 
 {
   "email": "admind@mail.com",
-  "password": "1234",
+  "password": "1234"
 }
 
 ###
 
-GET /users HTTP/1.1
+GET /users HTTP/1.1s
 Host: localhost:8888
