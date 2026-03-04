@@ -6,8 +6,17 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "koda-b6-backend1/docs"
 )
 
+// @title User API
+// @version 1.0
+// @description belajar swagger
+// @host localhost:8888
+// @BasePath /
 type Response struct {
 	Success bool   `json:"success"`
 	Message string `json:"message"`
@@ -24,6 +33,13 @@ var ListUser []Users
 func main() {
 	r := gin.Default()
 
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// root
+	// @Summary root
+	// @Tags Root
+	// @Success 200 {object} Response
+	// @Router /  [get]
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(200, Response{
 			Success: true,
@@ -31,6 +47,11 @@ func main() {
 		})
 	})
 
+	// get all users
+	// @Summary get all users
+	// @Tags Users
+	// @Success 200 {object} Response
+	// @Router /users [get]
 	r.GET("/users", func(ctx *gin.Context) {
 		ctx.JSON(200, Response{
 			Success: true,
@@ -39,6 +60,14 @@ func main() {
 		})
 	})
 
+	// create user
+	// @Summary create user
+	// @Tags User
+	// @Accept json
+	// @Produce json
+	// @Param body body Users true "user data"
+	// @Success 200 {object} Response
+	// @Router /users [post]
 	r.POST("/users", func(ctx *gin.Context) {
 		data := Users{}
 
@@ -71,6 +100,12 @@ func main() {
 
 	})
 
+	// get user by id
+	// @Summary get user by id
+	// @Tags Users
+	// @Param id path string true "user id"
+	// @Success 200 {object} Response
+	// @Router /users/{id} [get]
 	r.GET("/users/:id", func(ctx *gin.Context) {
 		id := ctx.Param("id")
 
@@ -87,6 +122,14 @@ func main() {
 		}
 	})
 
+	// update user
+	// @Summary update user
+	// @Tags Users
+	// @Accept json
+	// @Param id path int true "user index"
+	// @Param body body Users true "user data"
+	// @Success 200 {object} Response
+	// @Router /users/{id} [patch]
 	r.PATCH("/users/:id", func(ctx *gin.Context) {
 		i, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil || i < 0 || i >= len(ListUser) {
@@ -113,6 +156,12 @@ func main() {
 		})
 	})
 
+	// delete user
+	// @Summary delete user
+	// @Tags Users
+	// @Param id path int true "user index"
+	// @Success 200 {object} Response
+	// @Router /users/{id} [delete]
 	r.DELETE("/users/:id", func(ctx *gin.Context) {
 		i, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil || i < 0 || i >= len(ListUser) {
@@ -132,6 +181,12 @@ func main() {
 	})
 
 	/// register
+	// @Summary register user
+	// @Tags Auth
+	// @Accept json
+	// @Param body body Users true "register data"
+	// @Success 200 {object} Response
+	// @Router /register [post]
 	r.POST("/register", func(ctx *gin.Context) {
 		data := Users{}
 
@@ -163,6 +218,13 @@ func main() {
 
 	})
 
+	// login
+	// @Summary login user
+	// @Tags Auth
+	// @Accept json
+	// @Param body body Users true "login data"
+	// @Success 200 {object} Response
+	// @Router /login [post]
 	r.POST("/login", func(ctx *gin.Context) {
 		data := Users{}
 
