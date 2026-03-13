@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/matthewhartstonge/argon2"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
@@ -35,6 +36,8 @@ func main() {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	argon := argon2.DefaultConfig()
+
 	// root
 	// @Summary root
 	// @Tags Root
@@ -55,7 +58,7 @@ func main() {
 	r.GET("/users", func(ctx *gin.Context) {
 		ctx.JSON(200, Response{
 			Success: true,
-			Message: "wellcome to the backend",
+			Message: "list users",
 			Result:  ListUser,
 		})
 	})
@@ -90,6 +93,20 @@ func main() {
 				return
 			}
 		}
+
+		hash, err := argon.HashEncoded([]byte(data.Password))
+
+		if err != nil {
+
+			ctx.JSON(500, Response{
+				Success: false,
+				Message: "hash error",
+			})
+
+			return
+		}
+
+		data.Password = string(hash)
 
 		ListUser = append(ListUser, data)
 
